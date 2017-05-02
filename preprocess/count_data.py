@@ -24,7 +24,7 @@ def get_author_count():
     for i in data:
         author_list.extend(i['authors'])
     c = Counter(author_list)
-    print len(c)
+    print(len(c))
     return c
 
 def get_venue_count():
@@ -32,7 +32,7 @@ def get_venue_count():
     for i in data:
         venue_list.append(i['venue'])
     c = Counter(venue_list)
-    print len(c)
+    print(len(c))
     return c
 
 

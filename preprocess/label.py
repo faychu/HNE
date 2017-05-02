@@ -21,7 +21,7 @@ def read_label_data(_file_path, paper_list):
                 label_papers_list.append(label_paper)
             else:
                 paper_not_in_data.append(label_paper)
-    print len(label_papers_list),len(paper_not_in_data)
+    print(len(label_papers_list), len(paper_not_in_data))
     return label_papers_list, paper_not_in_data
 
 if __name__ == "__main__":

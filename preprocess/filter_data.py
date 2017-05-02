@@ -27,7 +27,7 @@ def get_rare_author(num):
     for i in data:
         if data[i] <= num:
             rare_author.append(i)
-    print 'rare authors #: '+ str(len(rare_author))
+    print('rare authors #: '+ str(len(rare_author)))
     return rare_author
 
 def get_rare_venue(num):
@@ -38,7 +38,7 @@ def get_rare_venue(num):
     for i in data:
         if data[i] <= num:
             rare_venue.append(i)
-    print 'rare venues #: ' + str(len(rare_venue))
+    print('rare venues #: ' + str(len(rare_venue)))
     return rare_venue
 
 def filter(rare_author, rare_venue):

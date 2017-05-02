@@ -9,6 +9,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preprocess/count_data.py" afterPath="$PROJECT_DIR$/preprocess/count_data.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preprocess/filter_data.py" afterPath="$PROJECT_DIR$/preprocess/filter_data.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preprocess/label.py" afterPath="$PROJECT_DIR$/preprocess/label.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preprocess/parseAminer.py" afterPath="$PROJECT_DIR$/preprocess/parseAminer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/preprocess/parse_dblp.py" afterPath="$PROJECT_DIR$/preprocess/parse_dblp.py" />
     </list>
     <ignored path="HNE.iws" />
@@ -93,8 +94,8 @@
       <file leaf-file-name="parseAminer.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/preprocess/parseAminer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="26" />
+            <state relative-caret-position="424">
+              <caret line="106" column="17" selection-start-line="106" selection-start-column="17" selection-end-line="106" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -120,7 +121,6 @@
         <option value="$PROJECT_DIR$/parseAminer.py" />
         <option value="$PROJECT_DIR$/preprocess.py" />
         <option value="$PROJECT_DIR$/data/test.txt" />
-        <option value="$PROJECT_DIR$/preprocess/parseAminer.py" />
         <option value="$PROJECT_DIR$/preprocess/data/test.txt" />
         <option value="$PROJECT_DIR$/preprocess/get_id.py" />
         <option value="$PROJECT_DIR$/preprocess/label" />
@@ -130,6 +130,7 @@
         <option value="$PROJECT_DIR$/preprocess/filter_data.py" />
         <option value="$PROJECT_DIR$/preprocess/count_data.py" />
         <option value="$PROJECT_DIR$/preprocess/parse_dblp.py" />
+        <option value="$PROJECT_DIR$/preprocess/parseAminer.py" />
       </list>
     </option>
   </component>
@@ -696,14 +697,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/preprocess/label.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="399">
@@ -738,10 +731,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/preprocess/parseAminer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="26" />
+        <state relative-caret-position="424">
+          <caret line="106" column="17" selection-start-line="106" selection-start-column="17" selection-end-line="106" selection-end-column="17" />
           <folding />
         </state>
       </provider>

@@ -5,7 +5,10 @@ class Config(object):
         ## embedding data
         self.embedding_filename = "ca-Grac"
         ## hyperparameter
-        self.struct = [None, 500, 100]
+        self.struct = {'input_dim': None,
+                       'text_dim': None,
+                       'layers': [None, 500, 100]}
+
         ## the loss func is  // gamma * L1 + alpha * L2 + reg * regularTerm //
         self.alpha = 1
         self.gamma = 1

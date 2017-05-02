@@ -34,6 +34,7 @@ def readDataFromFileLineByLine(_file_path):
                  'abstract': ''}
     with open(_file_path, 'r') as content_file:
         line_counter = 0
+        paperID = 0
 
         for one_line in content_file:
             line_counter += 1
@@ -41,6 +42,7 @@ def readDataFromFileLineByLine(_file_path):
             if len(one_line) == 0:  # black line
                 if len(one_paper['authors']) != 0 and one_paper['venue'] != '':
                     all_papers.append(one_paper)
+                    paperID += 1
                 else:
                     incomplete_paperID.append(one_paper['title'])
                 one_paper = {'title': '', 'authors': [], 'year': '', 'venue': '', 'index': '', 'references': [],
@@ -62,9 +64,9 @@ def readDataFromFileLineByLine(_file_path):
             elif one_line[:2] == '#%':
                 if one_line[2:] != '':
                     one_paper['references'].append(one_line[2:])
-        print 'line_counter: ' + str(line_counter)
-        print 'paper_counter:'+str(paperID)
-        return all_papers,incomplete_paperID
+        print('line_counter: ' + str(line_counter))
+        print('paper_counter:'+str(paperID))
+        return all_papers, incomplete_paperID
 
 def dump2pickle(data, _file_path):
     with open(_file_path, 'wb') as f:
@@ -82,7 +84,7 @@ def saveList2JsonFile(_data_list,_file_path ):
 if __name__ == "__main__":
     # process data and dump into .pickle and .json file
     result, incomplete_paperID = readDataFromFileLineByLine('data/publications.txt')
-    print len(result)
+    print(len(result))
     # dump2pickle(result, 'data/publications.pickle')
     # saveList2JsonFile(result, 'data/publications.json')
     # dump2txt(incomplete_paperID, 'data/incomplete.txt')

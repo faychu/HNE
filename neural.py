@@ -38,11 +38,11 @@ class NMFM:
         ###############################################
 
         ############## define input ###################
-        self.X = tf.placeholder("float", [None, struct['input_dim']])  # todo
+        self.X = tf.placeholder("float", [None, struct['input_dim']])
         # these variables are for sparse_dot
-        self.X_sp_indices = tf.placeholder(tf.int64)
-        self.X_sp_ids_val = tf.placeholder(tf.float32)
-        self.X_sp_shape = tf.placeholder(tf.int64)
+        self.X_sp_indices = tf.placeholder(tf.int64, shape=[None, 2], name='raw_indices')
+        self.X_sp_ids_val = tf.placeholder(tf.float32, shape=[None], name='raw_data')
+        self.X_sp_shape = tf.placeholder(tf.int64, shape=[2], name='raw_shape')
         self.X_sp = tf.SparseTensor(self.X_sp_indices, self.X_sp_ids_val, self.X_sp_shape)
         # Tfidf input
         self.T = tf.placeholder("float", [None, struct['text_dim']])

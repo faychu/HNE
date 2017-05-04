@@ -37,7 +37,8 @@ a1 =  tf.Variable(tf.random_normal([10]))
 
 with tf.Session() as sess:
     sess.run(tf.initialize_all_variables())
-    print(sess.run(Xsp))
+    print(sess.run(X[0]))
+    # print(sess.run(b1[0]))  'SparseTensor' object does not support indexing
     print(sess.run(tf.sparse_tensor_to_dense(Xsp)))
     print(sess.run(tf.sparse_tensor_to_dense(b1)))
     # print(sess.run(b1))
@@ -49,6 +50,7 @@ with tf.Session() as sess:
     print(sess.run((mul*embed)**2*0.3))
     print(sess.run(tf.shape(embed)))
     print(sess.run(bbb[1].values))
-    print(sess.run(tf.sparse_tensor_to_dense(bbb[3])))
+    for i in range(4):
+        print(sess.run(tf.sparse_tensor_to_dense(bbb[i])))
 
 

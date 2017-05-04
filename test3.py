@@ -24,7 +24,7 @@ Xsp = tf.SparseTensor(values=a.value,
 b = [Xsp,Xsp,Xsp]
 
 b1=tf.sparse_concat(axis=0,sp_inputs=b)
-bbb = tf.sparse_split(sp_input=b1,num_split=10,axis=1)
+bbb = tf.sparse_split(sp_input=b1,num_split=3,axis=0)
 d = tf.Variable([[1],[2],[3],[4],[5],[6],[7],[8],[9],[10]])
 print(b1)
 
@@ -50,7 +50,7 @@ with tf.Session() as sess:
     print(sess.run((mul*embed)**2*0.3))
     print(sess.run(tf.shape(embed)))
     print(sess.run(bbb[1].values))
-    for i in range(4):
+    for i in range(3):
         print(sess.run(tf.sparse_tensor_to_dense(bbb[i])))
 
 

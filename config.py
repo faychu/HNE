@@ -9,6 +9,7 @@ class Config(object):
                        'text_dim': None,
                        'output_dim': 500,
                        'layers': [None, 500, 100]}
+        self.mode = 0
         ## para for training
         self.batch_size = 1024
         self.epochs_limit = 1000

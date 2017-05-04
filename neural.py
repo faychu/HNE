@@ -55,9 +55,10 @@ class NMFM:
     def __FM(self):
         # factorization machine
         contribution_linear = \
-            tf.sparse_tensor_dense_matmul(self.X_sp, self.w)+self.w0
+            tf.sparse_tensor_dense_matmul(self.X_sp, self.w)+self.w0  # x[samples, input_dim] w[input_dim, 1]
         a = \
-            (tf.sparse_tensor_dense_matmul(self.X_sp, self.V))**2*0.5
+            (tf.sparse_tensor_dense_matmul(self.X_sp, self.V))**2*0.5  # V[input_dim, rank]
+        X_split = tf.sparse_split(sp_input=self.X_sp, num_split=self.X_sp_shape[1], axis=0)
         indices = self.X_sp_ids_val  # todo!
         value = None  # todo!
         v = tf.nn.embedding_lookup(indices)

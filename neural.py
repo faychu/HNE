@@ -30,7 +30,8 @@ class NMFM:
         self.b = {}
         self.H = tf.Variable(tf.random_normal([struct['text_dim'], struct['layers'][0]]))
         self.V = tf.Variable(tf.random_uniform([struct['input_dim'], struct['layers'][0]], -1.0, 1.0))
-        self.w = tf.Variable(tf.random_normal([struct['input_dim']+1]))
+        self.w = tf.Variable(tf.random_normal([struct['input_dim']]))
+        self.w0 = tf.Variable(0)
         for i in range(self.layers - 1):
             name = i
             self.W[name] = tf.Variable(tf.random_normal([struct[i], struct[i + 1]]), name=name)
@@ -43,13 +44,32 @@ class NMFM:
         self.X_sp_indices = tf.placeholder(tf.int64, shape=[None, 2], name='raw_indices')
         self.X_sp_ids_val = tf.placeholder(tf.float32, shape=[None], name='raw_data')
         self.X_sp_shape = tf.placeholder(tf.int64, shape=[2], name='raw_shape')
-        self.X_sp = tf.SparseTensor(self.X_sp_indices, self.X_sp_ids_val, self.X_sp_shape)
+        self.X_sp = tf.SparseTensor(self.X_sp_indices, self.X_sp_ids_val, self.X_sp_shape) # shape:[none,input_dim]
         # Tfidf input
         self.T = tf.placeholder("float", [None, struct['text_dim']])
         ###############################################
         self.__make_compute_graph()
         self.loss = self.__make_loss(config)
         self.optimizer = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.loss)
+
+    def __FM(self):
+        # factorization machine
+        contribution_linear = \
+            tf.matmul(self.X, self.w)+self.w0
+        _a = \
+            tf.matmul(self.X, self.V)
+        _indices = self.X_sp_ids_val
+        pass
+
+    def __MFM(self):
+        # modified factorization machine
+        pass
+
+    def __NMFM(self):
+        # neural modified factorization machine
+        pass
+
+
 
     def __make_compute_graph(self):
         pass
@@ -97,7 +117,7 @@ class NMFM:
         return self.sess.run(self.H, feed_dict=self.__get_feed_dict(data))
 
     def get_W(self):
-        return self.sess.run(self.W)
+        return self.sess.run(self.V)
 
     def get_B(self):
         return self.sess.run(self.b)

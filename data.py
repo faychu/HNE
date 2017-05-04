@@ -1,7 +1,7 @@
 # coding=utf-8
 # -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
 #
-# File Name : graph.py
+# File Name : data.py
 #
 # Purpose : Implement the algorithm
 #

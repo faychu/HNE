@@ -28,9 +28,10 @@ class NMFM:
         struct = self.struct
         self.W = {}
         self.b = {}
+        self.h = tf.Variable(tf.ones([struct['output_dim'], 1]))
         self.H = tf.Variable(tf.random_normal([struct['text_dim'], struct['layers'][0]]))
         self.V = tf.Variable(tf.random_uniform([struct['input_dim'], struct['layers'][0]], -1.0, 1.0))
-        self.w = tf.Variable(tf.random_normal([struct['input_dim']]))
+        self.w = tf.Variable(tf.random_normal([struct['input_dim'], 1]))
         self.w0 = tf.Variable(0)
         for i in range(self.layers - 1):
             name = i
@@ -39,7 +40,6 @@ class NMFM:
         ###############################################
 
         ############## define input ###################
-        self.X = tf.placeholder("float", [None, struct['input_dim']])
         # these variables are for sparse_dot
         self.X_sp_indices = tf.placeholder(tf.int64, shape=[None, 2], name='raw_indices')
         self.X_sp_ids_val = tf.placeholder(tf.float32, shape=[None], name='raw_data')
@@ -50,16 +50,24 @@ class NMFM:
         ###############################################
         self.__make_compute_graph()
         self.loss = self.__make_loss(config)
-        self.optimizer = tf.train.RMSPropOptimizer(config.learning_rate).minimize(self.loss)
+        self.optimizer = tf.train.GradientDescentOptimizer(config.learning_rate).minimize(self.loss)
 
     def __FM(self):
         # factorization machine
         contribution_linear = \
-            tf.matmul(self.X, self.w)+self.w0
-        _a = \
-            tf.matmul(self.X, self.V)
-        _indices = self.X_sp_ids_val
-        pass
+            tf.sparse_tensor_dense_matmul(self.X_sp, self.w)+self.w0
+        a = \
+            (tf.sparse_tensor_dense_matmul(self.X_sp, self.V))**2*0.5
+        indices = self.X_sp_ids_val  # todo!
+        value = None  # todo!
+        v = tf.nn.embedding_lookup(indices)
+        ones = tf.ones([1, tf.shape(self.V)[1]], dtype=tf.float32)
+        val = tf.Variable(value, dtype=tf.float32)
+        weight = tf.matmul(val, ones, transpose_a=True)
+        b = (v * weight)**2*0.5
+        contribution_interplay = tf.matmul((a-b), self.h)
+
+        return output
 
     def __MFM(self):
         # modified factorization machine
@@ -76,10 +84,8 @@ class NMFM:
         # todo
 
     def __make_loss(self, config):
-        def get_reg_loss(output):
-            ret = tf.nn.l2_loss(output-1)
-            return ret
-        pass
+        loss = tf.nn.l2_loss(output-1)
+        return loss
         # todo
 
     def save_model(self, path):
@@ -96,7 +102,10 @@ class NMFM:
         self.sess.run(init)
 
     def __get_feed_dict(self, data):
-        return {self.X: data.X}  # todo
+        X_ind = np.array(data.X_sp_indices)
+        X_val = np.array(data.X_sp_ids_val)
+        X_shape = np.array(data.X_sp_shape)
+        return {self.X_sp_indices: X_ind, self.X_sp_shape: X_shape, self.X_sp_ids_val: X_val}
 
     def fit(self, data):
         if (not self.is_Init):

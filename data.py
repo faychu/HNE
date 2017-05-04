@@ -14,57 +14,33 @@
 # _._._._._._._._._._._._._._._._._._._._._.
 import numpy as np
 from utils.utils import *
+from six.moves import cPickle as pickle
 
 
-class Graph(object):
-    def __init__(self, file_path, ng_sample_ratio):
-        suffix = file_path.split('.')[-1]
+class Records(object):
+    def __init__(self, pickle_path):
+        self.num_nodes = 1000000  # todo
         self.st = 0
-        self.is_epoch_end = False
-        if suffix == "txt":
-            fin = open(file_path, "r")
-            firstLine = fin.readline().strip().split(" ")
-            self.N = int(firstLine[0])
-            self.E = int(firstLine[1])
-            self.__is_epoch_end = False
-            self.adj_matrix = np.zeros([self.N, self.N], np.int_)
-            self.__links = np.zeros([self.E + ng_sample_ratio * self.N, 3], np.int_)
-            count = 0
-            for line in fin.readlines():
-                line = line.strip().split(' ')
-                self.adj_matrix[int(line[0]), int(line[1])] += 1
-                self.adj_matrix[int(line[1]), int(line[0])] += 1
-                self.__links[count][0] = int(line[0])
-                self.__links[count][1] = int(line[1])
-                self.__links[count][2] = 1
-                count += 1
-            fin.close()
-            if (ng_sample_ratio > 0):
-                self.__negativeSample(ng_sample_ratio * self.N, count, edges.copy())
-            self.__order = np.arange(self.N)
-            print
-            "getData done"
-            print
-            "Vertexes : %d  Edges : %d ngSampleRatio: %f" % (self.N, self.E, ng_sample_ratio)
-        else:
-            pass
-            # TODO read a mat file or something like that.
-
-    def __negativeSample(self, ngSample, count, edges):
-        print
-        "negative Sampling"
-        size = 0
-        while (size < ngSample):
-            xx = random.randint(0, self.N - 1)
-            yy = random.randint(0, self.N - 1)
-            if (xx == yy or edges[xx][yy] != 0):
-                continue
-            edges[xx][yy] = -1
-            edges[yy][xx] = -1
-            self.links[size + count] = [xx, yy, -1]
-            size += 1
-        print
-        "negative Sampling done"
+        self.is_epoch_end = True
+        with open(pickle_path,"rb") as f:
+            self.records = pickle.load(f)
+        self.N = len(self.records)
+        self.X_sp_indices = []
+        self.X_sp_ids_val = []
+        self.X_sp_shape = []
+        for i in self.records:
+            index = []
+            value = []
+            index.append(i['p'])
+            value.append(1)
+            index.extend(i['a'])
+            value.extend([1/len(i['a'])]*len(i['a']))
+            index.append(i['v'])
+            value.append(1)
+            self.X_sp_indices.append(index)
+            self.X_sp_ids_val.append(value)
+        self.__order = np.arange(self.N)
+        print("Get Data Done!")
 
     def sample(self, batch_size, do_shuffle=True):
         if self.is_epoch_end:
@@ -78,8 +54,10 @@ class Graph(object):
         mini_batch = Dotdict()
         en = min(self.N, self.st + batch_size)
         index = self.__order[self.st:en]
-        mini_batch.X = self.adj_matrix[index]
-        mini_batch.adjacent_matriX = self.adj_matrix[index][:, index]
+
+        mini_batch.X_sp_indices = [[i,j] for i in range(len(index)) for j in self.X_sp_indices[index[i]]]
+        mini_batch.X_sp_ids_val = [i for j in index for i in self.X_sp_ids_val[j]]
+        mini_batch.X_sp_shape = [len(index), self.num_nodes]
         if (en == self.N):
             en = 0
             self.is_epoch_end = True

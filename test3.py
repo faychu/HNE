@@ -11,10 +11,10 @@ n_features = 5
 dim = 3
 X = tf.Variable([[1,0,0,0,1],[0,1,0.5,0,0.5],[1,0,0,0.5,0.5],[0,0,1,1,0]])
 a = Dotdict()
-a['value'] = [1,2,3]
-a['indices'] =[[0,0],[0,3],[0,8]]
-Xsp = tf.SparseTensor(values=a['value'],
-                      indices=a['indices'],
+a.value = [1,2,3]
+a.indices =[[0,0],[0,3],[0,8]]
+Xsp = tf.SparseTensor(values=a.value,
+                      indices=a.indices,
                       dense_shape=[1,10])
 
 b = [Xsp,Xsp,Xsp]

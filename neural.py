@@ -57,16 +57,31 @@ class NMFM:
         contribution_linear = \
             tf.sparse_tensor_dense_matmul(self.X_sp, self.w)+self.w0  # x[samples, input_dim] w[input_dim, 1]
         a = \
-            (tf.sparse_tensor_dense_matmul(self.X_sp, self.V))**2*0.5  # V[input_dim, rank]
-        X_split = tf.sparse_split(sp_input=self.X_sp, num_split=self.X_sp_shape[1], axis=0)
-        indices = self.X_sp_ids_val  # todo!
-        value = None  # todo!
-        v = tf.nn.embedding_lookup(indices)
-        ones = tf.ones([1, tf.shape(self.V)[1]], dtype=tf.float32)
-        val = tf.Variable(value, dtype=tf.float32)
-        weight = tf.matmul(val, ones, transpose_a=True)
-        b = (v * weight)**2*0.5
-        contribution_interplay = tf.matmul((a-b), self.h)
+            (tf.sparse_tensor_dense_matmul(self.X_sp, self.V))**2  # x[samples, input_dim] V[input_dim, rank]
+        X_split = tf.sparse_split(sp_input=self.X_sp, num_split=self.X_sp_shape[0], axis=0)
+        ones = tf.ones([1, tf.shape(self.V)[1]], dtype=tf.float32)  # shape [1, rank]
+        b = 0
+        for sample in X_split:
+            index = tf.transpose(sample.indices)[1]
+            value = tf.reshape(sample.values,[-1,1])  # shape [num_selected_v,1]
+            v = tf.nn.embedding_lookup(self.V, index)
+            weight = tf.matmul(value, ones)  # shape [num_selected_v,rank]
+            b_ = tf.reduce_sum((v * weight) ** 2,axis=0,keep_dims=True)  # shape [1,rank]
+            if b == 0:
+                b = b_
+            else:
+                b = tf.concat([b, b_], axis=0)
+        # b: shape [samples,rank]
+        f_v = (a-b)*0.5
+        contribution_interplay = tf.matmul(f_v, self.h)  # [samples,rank],[rank,1] =[samples,1]
+
+
+        # v = tf.nn.embedding_lookup(indices)
+        # ones = tf.ones([1, tf.shape(self.V)[1]], dtype=tf.float32)
+        # val = tf.Variable(value, dtype=tf.float32)
+        # weight = tf.matmul(val, ones, transpose_a=True)
+        # b = (v * weight)**2*0.5
+        # contribution_interplay = tf.matmul((a-b), self.h)
 
         return output
 

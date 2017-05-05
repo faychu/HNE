@@ -41,7 +41,7 @@ class Records(object):
         self.__order = np.arange(self.N)
         print("Get Data Done!")
 
-    def sample(self, batch_size, do_shuffle=True):
+    def sample(self, batch_size, do_shuffle=True):  # Finished!
         if self.is_epoch_end:
             if do_shuffle:
                 np.random.shuffle(self.__order)

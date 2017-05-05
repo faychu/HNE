@@ -48,11 +48,10 @@ class NMFM:
         # Tfidf input
         self.T = tf.placeholder("float", [None, struct['text_dim']])
         ###############################################
-        self.__make_compute_graph()
         self.loss = self.__make_loss(config)
         self.optimizer = tf.train.GradientDescentOptimizer(config.learning_rate).minimize(self.loss)
 
-    def __FM(self):
+    def __FM(self):  # Finished!
         # factorization machine
         contribution_linear = \
             tf.sparse_tensor_dense_matmul(self.X_sp, self.w)+self.w0  # x[samples, input_dim] w[input_dim, 1]
@@ -92,6 +91,15 @@ class NMFM:
         # todo
 
     def __make_loss(self, config):
+        if config.mode == 0:
+            output = self.__FM()
+        elif config.mode == 1:
+            output = self.__MFM()
+        elif config.mode == 2:
+            output = self.__NMFM()
+        else:
+            output = 0
+            print("Warning: have not set the mode!")
         loss = tf.nn.l2_loss(output-1)
         return loss
         # todo
@@ -109,7 +117,7 @@ class NMFM:
         init = tf.global_variables_initializer()
         self.sess.run(init)
 
-    def __get_feed_dict(self, data):
+    def __get_feed_dict(self, data):  # Finished!
         X_ind = np.array(data.X_sp_indices)
         X_val = np.array(data.X_sp_ids_val)
         X_shape = np.array(data.X_sp_shape)

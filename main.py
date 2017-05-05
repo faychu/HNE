@@ -62,11 +62,11 @@ if __name__ == "__main__":
             if (loss > last_loss):
                 converge_count += 1
                 if converge_count > 10:
-                    print "model converge terminating"
+                    print("model converge terminating")
                     check_link_reconstruction(embedding, graph_data, [1000,3000,5000,7000,9000,10000])
                     break
             if epochs > config.epochs_limit:
-                print "exceed epochs limit terminating"
+                print("exceed epochs limit terminating")
                 break
             last_loss = loss
 

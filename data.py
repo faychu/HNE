@@ -16,7 +16,6 @@ import numpy as np
 from utils.utils import *
 from six.moves import cPickle as pickle
 
-
 class Records(object):
     def __init__(self, pickle_path):
         self.num_nodes = 1000000  # todo

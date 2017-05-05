@@ -28,7 +28,7 @@ class NMFM:
         struct = self.struct
         self.W = {}
         self.b = {}
-        self.h = tf.Variable(tf.ones([struct['output_dim'], 1]))
+        self.h = tf.Variable(tf.ones([struct['output_dim'], 1]), trainable=False)
         self.H = tf.Variable(tf.random_normal([struct['text_dim'], struct['layers'][0]]))
         self.V = tf.Variable(tf.random_uniform([struct['input_dim'], struct['layers'][0]], -1.0, 1.0))
         self.w = tf.Variable(tf.random_normal([struct['input_dim'], 1]))
@@ -74,15 +74,7 @@ class NMFM:
         # b: shape [samples,rank]
         f_v = (a-b)*0.5
         contribution_interplay = tf.matmul(f_v, self.h)  # [samples,rank],[rank,1] =[samples,1]
-
-
-        # v = tf.nn.embedding_lookup(indices)
-        # ones = tf.ones([1, tf.shape(self.V)[1]], dtype=tf.float32)
-        # val = tf.Variable(value, dtype=tf.float32)
-        # weight = tf.matmul(val, ones, transpose_a=True)
-        # b = (v * weight)**2*0.5
-        # contribution_interplay = tf.matmul((a-b), self.h)
-
+        output = contribution_linear - contribution_interplay
         return output
 
     def __MFM(self):

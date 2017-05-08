@@ -26,7 +26,9 @@ def read_label_data(_file_path, paper_list):
 
 if __name__ == "__main__":
     label_files = ['Data Mining', 'Database', 'Medical Informatics', 'Theory', 'Visualization']
-    paper_list = get_paper_list()
+    with open('data/pid.pickle','rb') as f:
+        paper_list = pickle.load(f)
+        print(len(paper_list))
     for label_file in label_files:
         label_papers_list, paper_not_in_data = read_label_data(label_file.join(['data/','.txt']), paper_list)
         with open(label_file.join(['data/','.pickle']), 'wb') as f:

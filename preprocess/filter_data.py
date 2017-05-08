@@ -21,7 +21,7 @@ import numpy as np
 
 def get_rare_author(num):
     rare_author = []
-    with open('data/author_count.pickle', 'rb') as f:
+    with open('data/author_count_filter_again.pickle', 'rb') as f:
         data = pickle.load(f)
     # 定义出现次数少于num次的为rare author
     for i in data:
@@ -32,7 +32,7 @@ def get_rare_author(num):
 
 def get_rare_venue(num):
     rare_venue = []
-    with open('data/venue_count.pickle', 'rb') as f:
+    with open('data/venue_count_filter_again.pickle', 'rb') as f:
         data = pickle.load(f)
     # 定义出现次数少于num次的为rare author
     for i in data:
@@ -42,6 +42,8 @@ def get_rare_venue(num):
     return rare_venue
 
 def filter(rare_author, rare_venue):
+    rare_author = set(rare_author)
+    rare_venue = set(rare_venue)
     with open('data/publications.pickle', 'rb') as f:
         records = pickle.load(f)
     new_records = []
@@ -54,37 +56,40 @@ def filter(rare_author, rare_venue):
             if len(authors) != 0:
                 record['authors'] = authors
                 new_records.append(record)
-            if len(new_records) % 10 == 0:
+            if len(new_records) % 100 == 0:
                 print(len(new_records))
     return new_records
 
 if __name__ == "__main__":
-    with open('data/author_label_dict.pickle','rb') as f:
-        dic = pickle.load(f)
-    rare_author = get_rare_author(4)
-    count = 0
-    rare_author_label = {}
-    f = open('data/rare_author_label.txt','w')
-    for i in rare_author:
-        if i in dic:
-            dic.pop(i)
-    count = [0,0,0,0]
-    for i in dic:
-        if dic[i] == '1':
-            count[0]+=1
-        elif dic[i] == '2':
-            count[1]+=1
-        elif dic[i] == '3':
-            count[2]+=1
-        elif dic[i] == '4':
-            count[3]+=1
-    print(count)
-    rare_venue = get_rare_venue(4)
-    with open('data/rare_author.pickle', 'wb') as f:
-        pickle.dump(rare_author, f, pickle.HIGHEST_PROTOCOL)
-    with open('data/rare_venue.pickle', 'wb') as f:
-        pickle.dump(rare_venue, f, pickle.HIGHEST_PROTOCOL)
-    filter_data = filter(rare_author,rare_venue)
-    print(len(filter_data))
-    with open('data/filter_data.pickle','wb') as f:
-        pickle.dump(filter_data,f,pickle.HIGHEST_PROTOCOL)
+    # with open('data/author_label_dict.pickle','rb') as f:
+    #     dic = pickle.load(f)
+    rare_author = get_rare_author(1)
+    # count = 0
+    # rare_author_label = {}
+    # f = open('data/rare_author_label.txt','w')
+    # for i in rare_author:
+    #     if i in dic:
+    #         dic.pop(i)
+    # count = [0,0,0,0]
+    # for i in dic:
+    #     if dic[i] == '1':
+    #         count[0]+=1
+    #     elif dic[i] == '2':
+    #         count[1]+=1
+    #     elif dic[i] == '3':
+    #         count[2]+=1
+    #     elif dic[i] == '4':
+    #         count[3]+=1
+    # print(count)
+    rare_venue = get_rare_venue(1)
+    # with open('data/rare_author.pickle', 'wb') as f:
+    #     pickle.dump(rare_author, f, pickle.HIGHEST_PROTOCOL)
+    # with open('data/rare_venue.pickle', 'wb') as f:
+    #     pickle.dump(rare_venue, f, pickle.HIGHEST_PROTOCOL)
+    # filter_data = filter(rare_author,rare_venue)
+    # print(len(filter_data))
+    # with open('data/filter_data.pickle','wb') as f:
+    #     pickle.dump(filter_data,f,pickle.HIGHEST_PROTOCOL)
+    # with open('data/filter_data.pickle','rb') as f:
+    #     data = pickle.load(f)
+    # print(data[0:10])

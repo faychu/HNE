@@ -20,6 +20,7 @@ from matplotlib import pyplot
 import numpy as np
 
 def get_author_count():
+    global data
     author_list = []
     for i in data:
         author_list.extend(i['authors'])
@@ -28,6 +29,7 @@ def get_author_count():
     return c
 
 def get_venue_count():
+    global data
     venue_list = []
     for i in data:
         venue_list.append(i['venue'])
@@ -51,16 +53,18 @@ def pdf_cdf_plot(counter):
 
 
 if __name__ == "__main__":
-    with open('data/publications.pickle','rb') as f:
+    # with open('data/publications.pickle','rb') as f:
+    with open('data/filter_data_again.pickle','rb') as f:
         data = pickle.load(f)
-
+    print(data[0:10])
+    print(len(data))
     vc = get_venue_count()
-    with open('data/venue_count.pickle','wb') as f:
+    with open('data/venue_count_filter_again.pickle','wb') as f:
         pickle.dump(vc, f, pickle.HIGHEST_PROTOCOL)
     print(len(vc))
     # pdf_cdf_plot(vc)
     ac = get_author_count()
-    with open('data/author_count.pickle', 'wb') as f:
+    with open('data/author_count_filter_again.pickle', 'wb') as f:
         pickle.dump(ac, f, pickle.HIGHEST_PROTOCOL)
     print(len(ac))
     # pdf_cdf_plot(ac)

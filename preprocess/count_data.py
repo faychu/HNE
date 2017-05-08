@@ -57,11 +57,13 @@ if __name__ == "__main__":
     vc = get_venue_count()
     with open('data/venue_count.pickle','wb') as f:
         pickle.dump(vc, f, pickle.HIGHEST_PROTOCOL)
-    pdf_cdf_plot(vc)
+    print(len(vc))
+    # pdf_cdf_plot(vc)
     ac = get_author_count()
     with open('data/author_count.pickle', 'wb') as f:
         pickle.dump(ac, f, pickle.HIGHEST_PROTOCOL)
-    pdf_cdf_plot(ac)
+    print(len(ac))
+    # pdf_cdf_plot(ac)
 
 
 

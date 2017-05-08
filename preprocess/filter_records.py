@@ -38,6 +38,19 @@ def get_venue_count(data):
     print("# V: " + str(len(c)))
     return c
 
+def pdf_cdf_plot(counter):
+    total = float(sum(counter.values()))
+    for key in counter:
+        counter[key] /= total
+    Y = zip(*sorted(counter.items(), key=lambda a: a[1], reverse=True))[1]
+    X = np.arange(len(counter))
+    CY = np.cumsum(Y)
+    pyplot.plot(X, Y,label='pdf', linewidth=3)
+    pyplot.plot(X, CY, label='cdf', linewidth=3)
+    pyplot.xlabel('Total')
+    pyplot.ylabel('probability')
+    pyplot.show()
+
 def get_rare_author(ac,num):
     rare_author = []
     # 定义出现次数少于num次的为rare author
@@ -144,52 +157,72 @@ if __name__ == "__main__":
     # rare_a = get_rare_author(ac, 4)
 
     ######## test and get id ############
+    # with open('data/filter_records.pickle', 'rb') as f:
+    #     data = pickle.load(f)
+    # print(len(data))
+    # print(data[0:10])
+    # pid_dic, aid_dic, vid_dic = get_id(data)
+    # with open('data/pid.pickle', 'wb') as f:
+    #     pickle.dump(pid_dic, f, 2)
+    # with open('data/aid.pickle', 'wb') as f:
+    #     pickle.dump(aid_dic, f, 2)
+    # with open('data/vid.pickle', 'wb') as f:
+    #     pickle.dump(vid_dic, f, 2)
+    #
+    # ######## check label #############
+    # # check paper label
+    # label_files = ['Data Mining', 'Database', 'Medical Informatics', 'Theory', 'Visualization']
+    # for label_file in label_files:
+    #     label_papers_list, paper_not_in_data = read_label_data(label_file.join(['data/', '.txt']), pid_dic)
+    #     with open(label_file.join(['data/', '.pickle']), 'wb') as f:
+    #         pickle.dump(label_papers_list, f, pickle.HIGHEST_PROTOCOL)
+    # # check author label
+    # author_dict = {}
+    # author_label = {}
+    # author_label_out = {}
+    # fout = open('author_label_out.txt','w')
+    # with open('data/author_dict_utf8.txt',"r") as f:
+    #     for line in f :
+    #         line = line.strip().split('\t')
+    #         author_dict[line[0]] = line[1]
+    # with open('data/author_label_utf8.txt',"r") as f:
+    #     for line in f :
+    #         line = line.strip().split('\t')
+    #         author_label[line[0]] = line[1]
+    # for i in author_label:
+    #     if author_dict[i] in aid_dic:
+    #         author_label_out[author_dict[i]] = author_label[i]
+    #         fout.write(author_dict[i]+'\t'+author_label[i]+'\n')
+    # with open('data/author_label_out.pickle','wb') as f:
+    #     pickle.dump(author_label_out, f, 2)
+    # count = [0, 0, 0, 0]
+    # for i in author_label_out:
+    #     if author_label_out[i] == '1':
+    #         count[0] += 1
+    #     elif author_label_out[i] == '2':
+    #         count[1] += 1
+    #     elif author_label_out[i] == '3':
+    #         count[2] += 1
+    #     elif author_label_out[i] == '4':
+    #         count[3] += 1
+    # print(count)
+
+    ############## make data for training ###########
     with open('data/filter_records.pickle', 'rb') as f:
         data = pickle.load(f)
-    print(len(data))
-    print(data[0:10])
-    pid_dic, aid_dic, vid_dic = get_id(data)
-    with open('data/pid.pickle', 'wb') as f:
-        pickle.dump(pid_dic, f, 2)
-    with open('data/aid.pickle', 'wb') as f:
-        pickle.dump(aid_dic, f, 2)
-    with open('data/vid.pickle', 'wb') as f:
-        pickle.dump(vid_dic, f, 2)
-
-    ######## check label #############
-    # check paper label
-    label_files = ['Data Mining', 'Database', 'Medical Informatics', 'Theory', 'Visualization']
-    for label_file in label_files:
-        label_papers_list, paper_not_in_data = read_label_data(label_file.join(['data/', '.txt']), pid_dic)
-        with open(label_file.join(['data/', '.pickle']), 'wb') as f:
-            pickle.dump(label_papers_list, f, pickle.HIGHEST_PROTOCOL)
-    # check author label
-    author_dict = {}
-    author_label = {}
-    author_label_out = {}
-    fout = open('author_label_out.txt','w')
-    with open('data/author_dict_utf8.txt',"r") as f:
-        for line in f :
-            line = line.strip().split('\t')
-            author_dict[line[0]] = line[1]
-    with open('data/author_label_utf8.txt',"r") as f:
-        for line in f :
-            line = line.strip().split('\t')
-            author_label[line[0]] = line[1]
-    for i in author_label:
-        if author_dict[i] in aid_dic:
-            author_label_out[author_dict[i]] = author_label[i]
-            fout.write(author_dict[i]+'\t'+author_label[i]+'\n')
-    with open('data/author_label_out.pickle','wb') as f:
-        pickle.dump(author_label_out, f, 2)
-    count = [0, 0, 0, 0]
-    for i in author_label_out:
-        if author_label_out[i] == '1':
-            count[0] += 1
-        elif author_label_out[i] == '2':
-            count[1] += 1
-        elif author_label_out[i] == '3':
-            count[2] += 1
-        elif author_label_out[i] == '4':
-            count[3] += 1
-    print(count)
+    with open('data/pid.pickle', 'rb') as f:
+        pid_dic = pickle.load(f)
+    with open('data/aid.pickle', 'rb') as f:
+        aid_dic = pickle.load(f)
+    with open('data/vid.pickle', 'rb') as f:
+        vid_dic = pickle.load(f)
+    records = []
+    for i in data:
+        record = {}
+        record['p'] = int(pid_dic[i['title']])
+        record['a'] = [int(aid_dic[j]) for j in i['authors']]
+        record['v'] = int(vid_dic[i['venue']])
+        records.append(record)
+    print(records[0:10])
+    with open('data/final_records.pickle','wb') as f:
+        pickle.dump(records, f, 2)

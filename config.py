@@ -7,12 +7,12 @@ class Config(object):
         ## hyperparameter
         self.struct = {'input_dim': 2085231, # nodes_num
                        'text_dim': None,
-                       'output_dim': 300,
+                       'output_dim': 400,
                        'layers': []}
         ## MODE: 0 -- FM, 1--NFM, 2--MFM,  3--NMFM
         self.mode = 0
         ## para for training
-        self.batch_size = 2000
+        self.batch_size = 1024
         self.epochs_limit = 2
         self.learning_rate = 0.01
 

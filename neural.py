@@ -70,6 +70,7 @@ class NMFM:
 
     def __FM(self):  # Finished!
         # factorization machine
+        # normalized_embeddings = self.V / norm
         contribution_linear = \
             tf.sparse_tensor_dense_matmul(self.X_sp, self.w)+self.w0  # x[samples, input_dim] w[input_dim, 1]
         a = \
@@ -80,7 +81,7 @@ class NMFM:
         f_v = (a-b)*0.5
         contribution_interplay = tf.matmul(f_v, self.h)  # [samples,rank],[rank,1] =[samples,1]
         output = contribution_linear + contribution_interplay #[samples,1]
-        return output
+        return a,b,output
 
     def __NFM(self):
         # neural factorization machine
@@ -102,7 +103,7 @@ class NMFM:
 
     def __make_loss(self, config):
         if config.mode == 0:
-            output = self.__FM()
+            output = self.__FM()[2]
         elif config.mode == 1:
             output = self.__NFM()
         elif config.mode == 2:
@@ -126,6 +127,8 @@ class NMFM:
 
     def do_variables_init(self):
         init = tf.global_variables_initializer()
+        norm = tf.sqrt(tf.reduce_sum(tf.square(self.V), 1, keep_dims=True))
+        self.V = self.V/norm
         self.sess.run(init)
         self.is_Init = True
         print("############ init!! ##########")
@@ -155,8 +158,32 @@ class NMFM:
         feed_dict = self.__get_feed_dict(data)
         return self.sess.run(tf.reduce_mean(self.loss), feed_dict=feed_dict)
 
+    def get_output(self, data):
+        if (not self.is_Init):
+            print
+            "Warning: the model isn't initialized, and will be initialized randomly"
+            self.do_variables_init()
+        feed_dict = self.__get_feed_dict(data)
+        return self.sess.run(self.__FM()[2],feed_dict=feed_dict)
+
     def get_embedding(self, data):
         return self.sess.run(self.V, feed_dict=self.__get_feed_dict(data))
+
+    def get_a(self,data):
+        feed_dict = self.__get_feed_dict(data)
+        return self.sess.run(self.__FM()[0], feed_dict=feed_dict)
+
+    def get_b(self,data):
+        feed_dict = self.__get_feed_dict(data)
+        return self.sess.run(self.__FM()[1], feed_dict=feed_dict)
+
+    def get_w0(self, data):
+        feed_dict = self.__get_feed_dict(data)
+        return self.sess.run(self.w0, feed_dict=feed_dict)
+
+    def get_w(self, data):
+        feed_dict = self.__get_feed_dict(data)
+        return self.sess.run(self.w, feed_dict=feed_dict)
 
     def get_W(self):
         return self.sess.run(self.W)

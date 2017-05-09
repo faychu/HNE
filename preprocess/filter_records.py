@@ -10,6 +10,7 @@ import numpy as np
 # pid、aid、vid（.pickle, .txt）
 # ['Data Mining', 'Database', 'Medical Informatics', 'Theory', 'Visualization'](.pickle)
 # author_label_out(.pickle, .txt)
+# final_records.pickle
 
 def get_paper_counter(data):
     paper_list = []

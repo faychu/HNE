@@ -25,13 +25,17 @@ b = [Xsp, Xsp, Xsp1]
 
 b1=tf.sparse_concat(axis=0,sp_inputs=b)
 bbb = tf.sparse_split(sp_input=b1,num_split=3,axis=0)
-d = tf.Variable([[1],[2],[3],[4],[5],[6],[7],[8],[9],[10]])
-print(b1)
-
-chengji  = tf.sparse_tensor_dense_matmul(b1,d)*3
-print(chengji)
-# Xsp1 = tf.SparseTensor(values=a1,indices=b1,dense_shape=[10])
-print(a.value)
+d = tf.Variable([[1],[2],[3],[4],[5],[6],[7],[8],[9],[10]],dtype=tf.float32)
+# d1 = tf.reduce_mean(d,axis=0)
+# d1 = tf.nn.l2_loss(d-1.0)
+d1 = tf.pow(d,2)
+train_step = tf.train.GradientDescentOptimizer(0.05).minimize(d1)
+# print(b1)
+#
+# chengji  = tf.sparse_tensor_dense_matmul(b1,d)*3
+# print(chengji)
+# # Xsp1 = tf.SparseTensor(values=a1,indices=b1,dense_shape=[10])
+# print(a.value)
 
 a1 =  tf.Variable(tf.random_normal([10]))
 s1 = tf.Variable([[1,2,3,4,5]],dtype=tf.float32)
@@ -40,23 +44,26 @@ sss = tf.concat([s2,s1],axis=0)
 print(sss)
 with tf.Session() as sess:
     sess.run(tf.initialize_all_variables())
-    print(sess.run(X[0]))
+    # print(sess.run(X[0]))
     # print(sess.run(b1[0]))  'SparseTensor' object does not support indexing
-    print(sess.run(tf.sparse_tensor_to_dense(Xsp)))
-    print(sess.run(tf.sparse_tensor_to_dense(b1)))
+    # print(sess.run(tf.sparse_tensor_to_dense(Xsp)))
+    # print(sess.run(tf.sparse_tensor_to_dense(b1)))
     # print(sess.run(b1))
     print("######")
     # print(sess.run(b1.indices))
     # print(sess.run(chengji))
+    print(sess.run(d1))
+    sess.run(train_step)
+    print(sess.run(d1))
     # print(sess.run(embed))
     # print(sess.run(mul))
     # print(sess.run((mul*embed)**2*0.3))
     # print(sess.run(tf.shape(embed)))
     # print(sess.run(b1.dense_shape))
-    print(sess.run(sss))
-    print(sess.run(s1))
-    sss = tf.concat([sss, s1], axis=0)
-    print(sess.run(sss))
+    # print(sess.run(sss))
+    # print(sess.run(s1))
+    # sss = tf.concat([sss, s1], axis=0)
+    # print(sess.run(sss))
     # for i in bbb:
         # print("index:")
         # index = tf.transpose(i.indices)[1]
@@ -72,6 +79,6 @@ with tf.Session() as sess:
         # print(sess.run(tf.shape(x)))
         # print(sess.run(x))
 
-    print(ones)
+    # print(ones)
 
 

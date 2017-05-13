@@ -71,8 +71,11 @@ class NMFM:
     def __FM(self):  # Finished!
         # factorization machine
         # normalized_embeddings = self.V / norm
+        norm =  tf.sqrt(tf.reduce_sum(tf.square(self.V), 1, keep_dims=True))
         contribution_linear = \
             tf.sparse_tensor_dense_matmul(self.X_sp, self.w)+self.w0  # x[samples, input_dim] w[input_dim, 1]
+        self.V = self.V/norm
+
         a = \
             (tf.sparse_tensor_dense_matmul(self.X_sp, self.V))**2  # x[samples, input_dim] V[input_dim, rank]
         V_records = tf.nn.embedding_lookup(self.V, self.X_indices)
@@ -81,7 +84,7 @@ class NMFM:
         f_v = (a-b)*0.5
         contribution_interplay = tf.matmul(f_v, self.h)  # [samples,rank],[rank,1] =[samples,1]
         output = contribution_linear + contribution_interplay #[samples,1]
-        return a,b,output
+        return a, b, output
 
     def __NFM(self):
         # neural factorization machine
